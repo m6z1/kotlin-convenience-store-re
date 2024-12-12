@@ -42,7 +42,9 @@ class ProductManager {
         val productIndex = products.indexOf(product)
         val addingEmptyOfRegularPriceProduct = Product(product.name, product.price, 0, null)
 
-        products.add(productIndex + 1, addingEmptyOfRegularPriceProduct)
+        if (product.promotion != null) {
+            products.add(productIndex + 1, addingEmptyOfRegularPriceProduct)
+        }
     }
 
     fun getProducts(): List<Product> {
@@ -50,23 +52,20 @@ class ProductManager {
     }
 
     fun validateToBuy(productToBuy: ProductToBuy) {
+        products.find { it.name == productToBuy.name }
+            ?: throw IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.")
+
         var quantity = 0
         products.forEach { product ->
             if (product.name == productToBuy.name) {
                 quantity += product.quantity
             }
         }
-        products.find { it.name == productToBuy.name }
-            ?: throw IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.")
         if (quantity < productToBuy.buyCount) throw IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.")
     }
 
     fun getPromotionProduct(productName: String): Product {
         return products.find { product -> product.name == productName && product.promotion != null }!!
-    }
-
-    fun getRegularPriceProduct(productName: String): Product {
-        return products.find { product -> product.name == productName && product.promotion == null }!!
     }
 
     fun getRegularPrice(productName: String): Int {

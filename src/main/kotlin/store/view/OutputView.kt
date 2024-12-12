@@ -1,6 +1,8 @@
 package store.view
 
 import store.model.Product
+import store.model.PurchasedProductOfPromotion
+import store.model.PurchasedProductOfRegularPrice
 import java.text.DecimalFormat
 
 class OutputView {
@@ -15,6 +17,53 @@ class OutputView {
             println("- ${product.name} ${THOUSAND_COMMA.format(product.price)} ${product.quantity}개 ${product.promotion ?: ""}")
         }
         println()
+    }
+
+    fun printPurchasedProducts(
+        purchasedProductsOfRegularPrice: List<PurchasedProductOfRegularPrice>,
+        purchasedProductsOfPromotion: List<PurchasedProductOfPromotion>,
+    ) {
+        println("===========W 편의점=============")
+        println("상품명\t\t수량\t금액")
+        if (purchasedProductsOfPromotion.isEmpty()) {
+            return printPurchasedProductsOfRegular(purchasedProductsOfRegularPrice)
+        }
+        purchasedProductsOfPromotion.forEach { product ->
+            println("${product.name}\t\t${product.count}\t${THOUSAND_COMMA.format(product.count * product.price)}")
+        }
+        purchasedProductsOfRegularPrice.forEach { product ->
+            println("${product.name}\t\t${product.count}\t${THOUSAND_COMMA.format(product.count * product.price)}")
+        }
+    }
+
+    private fun printPurchasedProductsOfRegular(
+        purchasedProductsOfRegularPrice: List<PurchasedProductOfRegularPrice>,
+    ) {
+        purchasedProductsOfRegularPrice.forEach { product ->
+            println("${product.name}\t\t${product.count}\t${THOUSAND_COMMA.format(product.count * product.price)}")
+        }
+    }
+
+    fun printGiveaways(purchasedProductsOfPromotion: List<PurchasedProductOfPromotion>) {
+        println("===========증\t정=============")
+        purchasedProductsOfPromotion.forEach { product ->
+            if (product.countOfPromotion != 0) {
+                println("${product.name}\t\t${product.countOfPromotion}")
+            }
+        }
+    }
+
+    fun printReceiptSummary(
+        buyCount: Int,
+        totalMoney: Int,
+        promotionDiscount: Int,
+        membershipDiscount: Int,
+        moneyToPay: Int,
+    ) {
+        println("총구매액\t\t${buyCount}\t${THOUSAND_COMMA.format(totalMoney)}")
+        println("행사할인\t\t\t-${THOUSAND_COMMA.format(promotionDiscount)}")
+        println("멤버십할인\t\t\t-${THOUSAND_COMMA.format(membershipDiscount)}")
+        println("내실돈\t\t\t${THOUSAND_COMMA.format(moneyToPay)}")
     }
 
     companion object {

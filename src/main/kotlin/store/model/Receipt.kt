@@ -3,7 +3,8 @@ package store.model
 class Receipt {
     private val purchasedProductsOfRegularPrice = mutableListOf<PurchasedProductOfRegularPrice>()
     private val purchasedProductsOfPromotion = mutableListOf<PurchasedProductOfPromotion>()
-    private var membershipDiscount = 0
+    var membershipDiscount = 0
+        private set
 
     fun addPurchasedProductOfRegularPrice(purchasedProduct: PurchasedProductOfRegularPrice) {
         purchasedProductsOfRegularPrice.add(purchasedProduct)
@@ -23,5 +24,28 @@ class Receipt {
             return
         }
         membershipDiscount = discount.toInt()
+    }
+
+    fun getPurchasedProductsOfRegularPrice() = purchasedProductsOfRegularPrice.map { it.copy() }.toList()
+
+    fun getPurchasedProductsOfPromotion() = purchasedProductsOfPromotion.map { it.copy() }.toList()
+
+    fun getTotalPurchasedProductsCount(): Int {
+        return purchasedProductsOfPromotion.sumOf { it.count } + purchasedProductsOfRegularPrice.sumOf { it.count }
+    }
+
+    fun getTotalMoney(): Int {
+        var totalMoney = 0
+        totalMoney += purchasedProductsOfPromotion.sumOf { it.price * it.count }
+        totalMoney += purchasedProductsOfRegularPrice.sumOf { it.price * it.count }
+        return totalMoney
+    }
+
+    fun getPromotionDiscount(): Int {
+        return purchasedProductsOfPromotion.sumOf { it.price * it.countOfPromotion }
+    }
+
+    fun getMoneyToPay(): Int {
+        return getTotalMoney() - getPromotionDiscount() - membershipDiscount
     }
 }

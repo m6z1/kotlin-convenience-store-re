@@ -187,10 +187,26 @@ class ConvenienceStoreController(
             ResponseState.POSITIVE -> receipt.addMembershipDiscount()
             ResponseState.NEGATIVE -> Unit
         }
-        showReceipt()
+        showPurchasedProducts()
     }
 
-    private fun showReceipt() {
+    private fun showPurchasedProducts() {
+        val purchasedProductsOfRegularPrice = receipt.getPurchasedProductsOfRegularPrice()
+        val purchasedProductsOfPromotion = receipt.getPurchasedProductsOfPromotion()
+        outputView.printPurchasedProducts(purchasedProductsOfRegularPrice, purchasedProductsOfPromotion)
+        if (purchasedProductsOfPromotion.all { it.countOfPromotion != 0 }) {
+            outputView.printGiveaways(purchasedProductsOfPromotion)
+        }
+        showReceiptSummary()
+    }
 
+    private fun showReceiptSummary() {
+        outputView.printReceiptSummary(
+            buyCount = receipt.getTotalPurchasedProductsCount(),
+            totalMoney = receipt.getTotalMoney(),
+            promotionDiscount = receipt.getPromotionDiscount(),
+            membershipDiscount = receipt.membershipDiscount,
+            moneyToPay = receipt.getMoneyToPay(),
+        )
     }
 }
