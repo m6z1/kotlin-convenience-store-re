@@ -48,4 +48,10 @@ class Receipt {
     fun getMoneyToPay(): Int {
         return getTotalMoney() - getPromotionDiscount() - membershipDiscount
     }
+
+    fun reset() {
+        purchasedProductsOfPromotion.clear()
+        purchasedProductsOfRegularPrice.clear()
+        membershipDiscount = 0
+    }
 }

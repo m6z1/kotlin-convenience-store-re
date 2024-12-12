@@ -1,6 +1,5 @@
 package store.view
 
-import camp.nextstep.edu.missionutils.Console
 import camp.nextstep.edu.missionutils.Console.readLine
 import store.model.ProductToBuy
 import store.model.ResponseState
@@ -43,6 +42,13 @@ class InputView {
 
     fun readMembership(): ResponseState {
         println("멤버십 할인을 받으시겠습니까? (Y/N)")
+        val readLine = readLine().uppercase()
+        val response = ResponseState.from(readLine)
+        return response
+    }
+
+    fun readMoreShopping(): ResponseState {
+        println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)")
         val readLine = readLine().uppercase()
         val response = ResponseState.from(readLine)
         return response

@@ -208,5 +208,28 @@ class ConvenienceStoreController(
             membershipDiscount = receipt.membershipDiscount,
             moneyToPay = receipt.getMoneyToPay(),
         )
+        checkMoreShopping()
+    }
+
+    private fun checkMoreShopping() {
+        while (true) {
+            try {
+                val response = inputView.readMoreShopping()
+                return checkResponseMoreShopping(response)
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
+    }
+
+    private fun checkResponseMoreShopping(response: ResponseState) {
+        when (response) {
+            ResponseState.POSITIVE -> {
+                receipt.reset()
+                return start()
+            }
+
+            ResponseState.NEGATIVE -> return
+        }
     }
 }
