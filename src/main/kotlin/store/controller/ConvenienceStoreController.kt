@@ -30,7 +30,6 @@ class ConvenienceStoreController(
     private fun executePayingLogic(productsToBuy: List<ProductToBuy>) {
         productsToBuy.forEach { productToBuy ->
             val promotionState = promotionManager.checkProductPromotion(productToBuy)
-            println(promotionState)
             when (promotionState) {
                 PromotionState.NOT_APPLICABLE -> addPurchasedProductOfRegularPrice(productToBuy, false)
                 PromotionState.MORE_PRODUCT_APPLICABLE -> checkBuyerAddingProductForPromotion(productToBuy)
@@ -38,6 +37,7 @@ class ConvenienceStoreController(
                 PromotionState.APPLICABLE -> addPurchasedProductOfPromotion(productToBuy)
             }
         }
+        checkMembership()
     }
 
     private fun addPurchasedProductOfRegularPrice(productToBuy: ProductToBuy, isPromotionPeriod: Boolean) {
@@ -169,5 +169,28 @@ class ConvenienceStoreController(
         receipt.addPurchasedProductOfPromotion(purchasedProduct)
 
         //TODO: 재고 관리 업데이트
+    }
+
+    private fun checkMembership() {
+        while (true) {
+            try {
+                val response = inputView.readMembership()
+                return checkResponseMembership(response)
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
+    }
+
+    private fun checkResponseMembership(response: ResponseState) {
+        when (response) {
+            ResponseState.POSITIVE -> receipt.addMembershipDiscount()
+            ResponseState.NEGATIVE -> Unit
+        }
+        showReceipt()
+    }
+
+    private fun showReceipt() {
+
     }
 }

@@ -37,4 +37,10 @@ class InputView {
         val response = ResponseState.from(readLine().uppercase())
         return response
     }
+
+    fun readMembership(): ResponseState {
+        println("멤버십 할인을 받으시겠습니까? (Y/N)")
+        val response = ResponseState.from(readLine().uppercase())
+        return response
+    }
 }
