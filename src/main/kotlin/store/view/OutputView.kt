@@ -64,6 +64,7 @@ class OutputView {
         membershipDiscount: Int,
         moneyToPay: Int,
     ) {
+        println("==============================")
         println("총구매액\t\t${buyCount}\t${THOUSAND_COMMA.format(totalMoney)}")
         println("행사할인\t\t\t-${THOUSAND_COMMA.format(promotionDiscount)}")
         println("멤버십할인\t\t\t-${THOUSAND_COMMA.format(membershipDiscount)}")
