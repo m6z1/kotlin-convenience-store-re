@@ -1,5 +1,14 @@
 package store
 
+import store.controller.ConvenienceStoreController
+import store.model.ProductManager
+import store.model.PromotionManager
+
 fun main() {
-    // TODO: 프로그램 구현
+    val productManager = ProductManager()
+    val promotionManager = PromotionManager()
+
+    val convenienceStoreController = ConvenienceStoreController(productManager, promotionManager)
+
+    convenienceStoreController.start()
 }
