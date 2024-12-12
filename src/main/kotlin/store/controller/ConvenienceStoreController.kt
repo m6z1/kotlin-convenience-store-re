@@ -2,14 +2,16 @@ package store.controller
 
 import store.model.ProductManager
 import store.model.PromotionManager
+import store.view.OutputView
 
 class ConvenienceStoreController(
     private val productManager: ProductManager,
     private val promotionManager: PromotionManager,
+    private val outputView: OutputView,
 ) {
 
     fun start() {
-        println(productManager.products)
-        println(promotionManager.promotions)
+        val products = productManager.getProducts()
+        outputView.printWelcome(products)
     }
 }

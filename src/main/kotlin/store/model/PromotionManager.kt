@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 class PromotionManager {
     private val fileReader = FileReader(PROMOTION_FILE_PATH)
-   val promotions = mutableListOf<Promotion>()
+   private val promotions = mutableListOf<Promotion>()
 
     init {
         val fileLines = fileReader.readFile().drop(1)

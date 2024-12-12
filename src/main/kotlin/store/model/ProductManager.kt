@@ -2,7 +2,7 @@ package store.model
 
 class ProductManager {
     private val fileReader = FileReader(PRODUCT_FILE_PATH)
-    val products = mutableListOf<Product>()
+    private val products = mutableListOf<Product>()
 
     init {
         val fileLines = fileReader.readFile().drop(1)
@@ -30,24 +30,23 @@ class ProductManager {
 
     private fun checkEmptyOfRegularPriceProduct() {
         val productsCount = products.groupingBy { it.name }.eachCount()
-        val emptyOfRegularPriceProductsName = mutableListOf<String>()
         productsCount.forEach {
             if (it.value == 1) {
-                emptyOfRegularPriceProductsName.add(it.key)
+                addEmptyOfRegularPriceProduct(it.key)
             }
         }
-        updateEmptyOfRegularPriceProducts(emptyOfRegularPriceProductsName)
     }
 
-    private fun updateEmptyOfRegularPriceProducts(productNames: List<String>) {
-        val originalProducts = products.toList()
-        originalProducts.forEachIndexed { index, product ->
-            productNames.forEach { productName ->
-                if (product.name == productName) {
-                    products.add(index + 1, Product(product.name, product.price, 0, null))
-                }
-            }
-        }
+    private fun addEmptyOfRegularPriceProduct(productNames: String) {
+        val product = products.find { it.name == productNames }!!
+        val productIndex = products.indexOf(product)
+        val addingEmptyOfRegularPriceProduct = Product(product.name, product.price, 0, null)
+
+        products.add(productIndex + 1, addingEmptyOfRegularPriceProduct)
+    }
+
+    fun getProducts(): List<Product> {
+        return products.map { it.copy() }.toList()
     }
 
     companion object {
