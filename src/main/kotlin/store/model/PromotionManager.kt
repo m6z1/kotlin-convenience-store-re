@@ -55,7 +55,7 @@ class PromotionManager {
 
     fun getProductCountOfRegularPrice(productToBuy: ProductToBuy): Int {
         val promotionProduct = productManager.getPromotionProduct(productToBuy.name)
-        val promotion = promotions.find { it.name == promotionProduct?.name }
+        val promotion = promotions.find { it.name == promotionProduct?.promotion }
         val promotionSetSize = promotion!!.buy + promotion.get
         val availableOfPromotionProductQuantity = promotionProduct!!.quantity / promotionSetSize
         return productToBuy.buyCount - (availableOfPromotionProductQuantity * promotionSetSize)
