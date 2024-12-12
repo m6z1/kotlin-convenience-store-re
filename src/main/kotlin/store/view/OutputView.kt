@@ -15,7 +15,7 @@ class OutputView {
                     println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 재고 없음")
                     return@forEach
                 }
-                println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 재고 없음 ${product.promotion ?: ""}")
+                println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 재고 없음 ${product.promotion}")
                 return@forEach
             }
             println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 ${product.quantity}개 ${product.promotion ?: ""}")
