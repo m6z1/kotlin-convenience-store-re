@@ -4,7 +4,8 @@ import java.time.LocalDate
 
 class PromotionManager {
     private val fileReader = FileReader(PROMOTION_FILE_PATH)
-   private val promotions = mutableListOf<Promotion>()
+    private val productManager = ProductManager()
+    private val promotions = mutableListOf<Promotion>()
 
     init {
         val fileLines = fileReader.readFile().drop(1)
@@ -20,6 +21,25 @@ class PromotionManager {
                 )
             )
         }
+    }
+
+    fun checkProductPromotion(productToBuy: ProductToBuy): PromotionState {
+        val promotionProduct = productManager.getPromotionProductQuantity(productToBuy.name)
+        val promotion = promotions.find { it.name == promotionProduct.promotion }!!
+        if (isValidPromotionPeriod(promotionProduct.promotion!!).not()) return PromotionState.NOT_APPLICABLE
+        if (promotionProduct.quantity < productToBuy.buyCount) return PromotionState.SOME_PRODUCT_OUT_OF_STOCK
+        if (productToBuy.buyCount % (promotion.buy + promotion.get) == promotion.buy) {
+            if (productToBuy.buyCount + promotion.get <= promotionProduct.quantity) {
+                return PromotionState.MORE_PRODUCT_APPLICABLE
+            }
+            return PromotionState.SOME_PRODUCT_OUT_OF_STOCK
+        }
+        return PromotionState.APPLICABLE
+    }
+
+    private fun isValidPromotionPeriod(productPromotionName: String): Boolean {
+        val promotion = promotions.find { it.name == productPromotionName }!!
+        return LocalDate.now() in promotion.startDate..promotion.endDate
     }
 
     companion object {
