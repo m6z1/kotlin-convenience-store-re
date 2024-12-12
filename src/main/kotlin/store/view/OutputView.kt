@@ -14,6 +14,7 @@ class OutputView {
             }
             println("- ${product.name} ${THOUSAND_COMMA.format(product.price)} ${product.quantity}개 ${product.promotion ?: ""}")
         }
+        println()
     }
 
     companion object {
