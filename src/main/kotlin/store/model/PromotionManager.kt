@@ -24,9 +24,11 @@ class PromotionManager {
     }
 
     fun checkProductPromotion(productToBuy: ProductToBuy): PromotionState {
-        val promotionProduct = productManager.getPromotionProduct(productToBuy.name) ?: return PromotionState.NOT_APPLICABLE
+        val promotionProduct =
+            productManager.getPromotionProduct(productToBuy.name) ?: return PromotionState.NOT_APPLICABLE
         val promotion = promotions.find { it.name == promotionProduct.promotion }!!
         if (isValidPromotionPeriod(promotionProduct.promotion!!).not()) return PromotionState.NOT_APPLICABLE
+        if (promotion.buy + promotion.get > promotionProduct.quantity) return PromotionState.NOT_APPLICABLE
         if (promotionProduct.quantity < productToBuy.buyCount) return PromotionState.SOME_PRODUCT_OUT_OF_STOCK
         if (productToBuy.buyCount % (promotion.buy + promotion.get) == promotion.buy) {
             if (productToBuy.buyCount + promotion.get <= promotionProduct.quantity) {
