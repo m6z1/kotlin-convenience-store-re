@@ -16,12 +16,16 @@ class ConvenienceStoreController(
         val products = productManager.getProducts()
         outputView.printWelcome(products)
 
+        return getProductsToBuy()
+    }
+
+    private fun getProductsToBuy() {
         while (true) {
             try {
                 val productsToBuy = inputView.readProductsToBuy()
                 productsToBuy.forEach { productManager.validateToBuy(it) }
                 return executePayingLogic(productsToBuy)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 println(e.message)
             }
         }
@@ -56,7 +60,7 @@ class ConvenienceStoreController(
             try {
                 val response = inputView.readAddingProductForPromotion(productToBuy.name)
                 return checkResponseOfAddingProductForPromotion(response, productToBuy)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 println(e.message)
             }
         }
@@ -107,7 +111,7 @@ class ConvenienceStoreController(
                 val productCountOfRegularPrice = promotionManager.getProductCountOfRegularPrice(productToBuy)
                 val response = inputView.readSomeProductToPayRegularPrice(productToBuy.name, productCountOfRegularPrice)
                 return checkResponseSomeProductToPayRegularPrice(response, productToBuy, productCountOfRegularPrice)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 println(e.message)
             }
         }
@@ -176,7 +180,7 @@ class ConvenienceStoreController(
             try {
                 val response = inputView.readMembership()
                 return checkResponseMembership(response)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 println(e.message)
             }
         }
@@ -216,7 +220,7 @@ class ConvenienceStoreController(
             try {
                 val response = inputView.readMoreShopping()
                 return checkResponseMoreShopping(response)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
                 println(e.message)
             }
         }
