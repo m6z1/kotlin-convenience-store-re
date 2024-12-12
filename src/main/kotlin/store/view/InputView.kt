@@ -31,4 +31,10 @@ class InputView {
         val response = ResponseState.from(readLine().uppercase())
         return response
     }
+
+    fun readSomeProductToPayRegularPrice(productName: String, productCountOfRegularPrice: Int): ResponseState {
+        println("현재 $productName ${productCountOfRegularPrice}개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)")
+        val response = ResponseState.from(readLine().uppercase())
+        return response
+    }
 }

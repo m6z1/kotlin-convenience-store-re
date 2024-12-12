@@ -51,6 +51,14 @@ class PromotionManager {
         return promotions.find { it.name == promotionName }!!
     }
 
+    fun getProductCountOfRegularPrice(productToBuy: ProductToBuy): Int {
+        val promotionProduct = productManager.getPromotionProduct(productToBuy.name)
+        val promotion = promotions.find { it.name == promotionProduct.name }!!
+        val promotionSetSize = promotion.buy + promotion.get
+        val availableOfPromotionProductQuantity = promotionProduct.quantity / promotionSetSize
+        return productToBuy.buyCount - (availableOfPromotionProductQuantity * promotionSetSize)
+    }
+
     companion object {
         private const val PROMOTION_FILE_PATH = "src/main/resources/promotions.md"
     }

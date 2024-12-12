@@ -11,4 +11,7 @@ class Receipt {
     fun addPurchasedProductOfPromotion(purchasedProduct: PurchasedProductOfPromotion) {
         purchasedProductsOfPromotion.add(purchasedProduct)
     }
+
+    fun getRR() = purchasedProductsOfRegularPrice
+    fun getGG() = purchasedProductsOfPromotion
 }

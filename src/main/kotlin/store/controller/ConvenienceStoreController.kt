@@ -30,18 +30,12 @@ class ConvenienceStoreController(
     private fun executePayingLogic(productsToBuy: List<ProductToBuy>) {
         productsToBuy.forEach { productToBuy ->
             val promotionState = promotionManager.checkProductPromotion(productToBuy)
+            println(promotionState)
             when (promotionState) {
                 PromotionState.NOT_APPLICABLE -> addPurchasedProductOfRegularPrice(productToBuy, false)
-
                 PromotionState.MORE_PRODUCT_APPLICABLE -> checkBuyerAddingProductForPromotion(productToBuy)
-
-                PromotionState.SOME_PRODUCT_OUT_OF_STOCK -> {
-                    // TODO: 몇 개가 프로모션 적용 불가능 (안내) }
-                }
-
-                PromotionState.APPLICABLE -> {
-                    // TODO: 영수증 추가 (프로모션 적용)
-                }
+                PromotionState.SOME_PRODUCT_OUT_OF_STOCK -> checkBuyerSomeProductToPayRegularPrice(productToBuy)
+                PromotionState.APPLICABLE -> addPurchasedProductOfPromotion(productToBuy)
             }
         }
     }
@@ -73,7 +67,7 @@ class ConvenienceStoreController(
             ResponseState.POSITIVE -> {
                 val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
                 val countOfPromotion =
-                    promotionManager.getGiveawaysCount(promotionProductInfo.promotion!!, productToBuy.buyCount)
+                    promotionManager.getGiveawaysCount(promotionProductInfo.promotion!!, productToBuy.buyCount + 1)
                 val purchasedProductOfPromotion = PurchasedProductOfPromotion(
                     name = productToBuy.name,
                     count = productToBuy.buyCount + 1,
@@ -81,6 +75,8 @@ class ConvenienceStoreController(
                     countOfPromotion = countOfPromotion,
                 )
                 receipt.addPurchasedProductOfPromotion(purchasedProductOfPromotion)
+
+                //TODO: 재고 관리 업데이트
             }
 
             ResponseState.NEGATIVE -> {
@@ -88,8 +84,90 @@ class ConvenienceStoreController(
                 val promotion = promotionManager.getPromotion(promotionProductInfo.promotion!!)
                 if (promotion.buy >= productToBuy.buyCount) {
                     addPurchasedProductOfRegularPrice(productToBuy, true)
+                    return
                 }
+                val countOfPromotion =
+                    promotionManager.getGiveawaysCount(promotionProductInfo.promotion, productToBuy.buyCount)
+                val purchasedProductOfPromotion = PurchasedProductOfPromotion(
+                    name = productToBuy.name,
+                    count = productToBuy.buyCount,
+                    price = promotionProductInfo.price,
+                    countOfPromotion = countOfPromotion,
+                )
+                receipt.addPurchasedProductOfPromotion(purchasedProductOfPromotion)
+
+                //TODO: 재고 관리 업데이트
             }
         }
+    }
+
+    private fun checkBuyerSomeProductToPayRegularPrice(productToBuy: ProductToBuy) {
+        while (true) {
+            try {
+                val productCountOfRegularPrice = promotionManager.getProductCountOfRegularPrice(productToBuy)
+                val response = inputView.readSomeProductToPayRegularPrice(productToBuy.name, productCountOfRegularPrice)
+                return checkResponseSomeProductToPayRegularPrice(response, productToBuy, productCountOfRegularPrice)
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
+    }
+
+    private fun checkResponseSomeProductToPayRegularPrice(
+        response: ResponseState,
+        productToBuy: ProductToBuy,
+        productCountOfRegularPrice: Int,
+    ) {
+        when (response) {
+            ResponseState.POSITIVE -> {
+                val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
+                val countOfPromotion =
+                    promotionManager.getGiveawaysCount(
+                        promotionProductInfo.promotion!!,
+                        productToBuy.buyCount - productCountOfRegularPrice
+                    )
+                val purchasedProductOfPromotion = PurchasedProductOfPromotion(
+                    name = productToBuy.name,
+                    count = productToBuy.buyCount,
+                    price = promotionProductInfo.price,
+                    countOfPromotion = countOfPromotion,
+                )
+                receipt.addPurchasedProductOfPromotion(purchasedProductOfPromotion)
+
+                // TODO: 재고 관리 업데이트
+            }
+
+            ResponseState.NEGATIVE -> {
+                val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
+                val countOfPromotion =
+                    promotionManager.getGiveawaysCount(
+                        promotionProductInfo.promotion!!,
+                        productToBuy.buyCount - productCountOfRegularPrice,
+                    )
+                val purchasedProductOfPromotion = PurchasedProductOfPromotion(
+                    name = productToBuy.name,
+                    count = productToBuy.buyCount - productCountOfRegularPrice,
+                    price = promotionProductInfo.price,
+                    countOfPromotion = countOfPromotion,
+                )
+                receipt.addPurchasedProductOfPromotion(purchasedProductOfPromotion)
+
+                //TODO: 재고 관리 업데이트
+            }
+        }
+    }
+
+    private fun addPurchasedProductOfPromotion(productToBuy: ProductToBuy) {
+        val product = productManager.getPromotionProduct(productToBuy.name)
+        val countOfPromotion = promotionManager.getGiveawaysCount(product.promotion!!, productToBuy.buyCount)
+        val purchasedProduct = PurchasedProductOfPromotion(
+            name = productToBuy.name,
+            count = productToBuy.buyCount,
+            price = product.price,
+            countOfPromotion = countOfPromotion,
+        )
+        receipt.addPurchasedProductOfPromotion(purchasedProduct)
+
+        //TODO: 재고 관리 업데이트
     }
 }
