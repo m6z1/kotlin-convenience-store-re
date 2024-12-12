@@ -24,7 +24,7 @@ class PromotionManager {
     }
 
     fun checkProductPromotion(productToBuy: ProductToBuy): PromotionState {
-        val promotionProduct = productManager.getPromotionProductQuantity(productToBuy.name)
+        val promotionProduct = productManager.getPromotionProduct(productToBuy.name)
         val promotion = promotions.find { it.name == promotionProduct.promotion }!!
         if (isValidPromotionPeriod(promotionProduct.promotion!!).not()) return PromotionState.NOT_APPLICABLE
         if (promotionProduct.quantity < productToBuy.buyCount) return PromotionState.SOME_PRODUCT_OUT_OF_STOCK
@@ -40,6 +40,15 @@ class PromotionManager {
     private fun isValidPromotionPeriod(productPromotionName: String): Boolean {
         val promotion = promotions.find { it.name == productPromotionName }!!
         return LocalDate.now() in promotion.startDate..promotion.endDate
+    }
+
+    fun getGiveawaysCount(promotionName: String, buyCount: Int): Int {
+        val promotion = promotions.find { it.name == promotionName }!!
+        return buyCount / (promotion.buy + promotion.get)
+    }
+
+    fun getPromotion(promotionName: String): Promotion {
+        return promotions.find { it.name == promotionName }!!
     }
 
     companion object {

@@ -2,6 +2,7 @@ package store.view
 
 import camp.nextstep.edu.missionutils.Console.readLine
 import store.model.ProductToBuy
+import store.model.ResponseState
 
 class InputView {
 
@@ -23,5 +24,11 @@ class InputView {
         }
 
         return products.toList()
+    }
+
+    fun readAddingProductForPromotion(productName: String): ResponseState {
+        println("현재 ${productName}은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)")
+        val response = ResponseState.from(readLine().uppercase())
+        return response
     }
 }

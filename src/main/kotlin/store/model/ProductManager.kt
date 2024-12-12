@@ -61,12 +61,16 @@ class ProductManager {
         if (quantity < productToBuy.buyCount) throw IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.")
     }
 
+    fun getPromotionProduct(productName: String): Product {
+        return products.find { product -> product.name == productName && product.promotion != null }!!
+    }
+
     fun getRegularPriceProduct(productName: String): Product {
         return products.find { product -> product.name == productName && product.promotion == null }!!
     }
 
-    fun getPromotionProductQuantity(productName: String): Product {
-        return products.find { product -> product.name == productName && product.promotion != null }!!
+    fun getRegularPrice(productName: String): Int {
+        return products.find { product -> product.name == productName && product.promotion == null }!!.price
     }
 
     companion object {
