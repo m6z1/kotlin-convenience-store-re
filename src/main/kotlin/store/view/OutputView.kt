@@ -11,10 +11,14 @@ class OutputView {
         println("안녕하세요. W편의점입니다.\n" + "현재 보유하고 있는 상품입니다.\n")
         products.forEach { product ->
             if (product.quantity == 0) {
-                println("- ${product.name} ${THOUSAND_COMMA.format(product.price)} 재고 없음 ${product.promotion ?: ""}")
+                if (product.promotion == null) {
+                    println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 재고 없음")
+                    return@forEach
+                }
+                println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 재고 없음 ${product.promotion ?: ""}")
                 return@forEach
             }
-            println("- ${product.name} ${THOUSAND_COMMA.format(product.price)} ${product.quantity}개 ${product.promotion ?: ""}")
+            println("- ${product.name} ${THOUSAND_COMMA.format(product.price)}원 ${product.quantity}개 ${product.promotion ?: ""}")
         }
         println()
     }
