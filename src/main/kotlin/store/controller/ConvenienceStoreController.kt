@@ -67,7 +67,7 @@ class ConvenienceStoreController(
             ResponseState.POSITIVE -> {
                 val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
                 val countOfPromotion =
-                    promotionManager.getGiveawaysCount(promotionProductInfo.promotion!!, productToBuy.buyCount + 1)
+                    promotionManager.getGiveawaysCount(promotionProductInfo?.promotion!!, productToBuy.buyCount + 1)
                 val purchasedProductOfPromotion = PurchasedProductOfPromotion(
                     name = productToBuy.name,
                     count = productToBuy.buyCount + 1,
@@ -81,7 +81,7 @@ class ConvenienceStoreController(
 
             ResponseState.NEGATIVE -> {
                 val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
-                val promotion = promotionManager.getPromotion(promotionProductInfo.promotion!!)
+                val promotion = promotionManager.getPromotion(promotionProductInfo?.promotion!!)
                 if (promotion.buy >= productToBuy.buyCount) {
                     addPurchasedProductOfRegularPrice(productToBuy, true)
                     return
@@ -123,7 +123,7 @@ class ConvenienceStoreController(
                 val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
                 val countOfPromotion =
                     promotionManager.getGiveawaysCount(
-                        promotionProductInfo.promotion!!,
+                        promotionProductInfo?.promotion!!,
                         productToBuy.buyCount - productCountOfRegularPrice
                     )
                 val purchasedProductOfPromotion = PurchasedProductOfPromotion(
@@ -141,7 +141,7 @@ class ConvenienceStoreController(
                 val promotionProductInfo = productManager.getPromotionProduct(productToBuy.name)
                 val countOfPromotion =
                     promotionManager.getGiveawaysCount(
-                        promotionProductInfo.promotion!!,
+                        promotionProductInfo?.promotion!!,
                         productToBuy.buyCount - productCountOfRegularPrice,
                     )
                 val purchasedProductOfPromotion = PurchasedProductOfPromotion(
@@ -159,7 +159,7 @@ class ConvenienceStoreController(
 
     private fun addPurchasedProductOfPromotion(productToBuy: ProductToBuy) {
         val product = productManager.getPromotionProduct(productToBuy.name)
-        val countOfPromotion = promotionManager.getGiveawaysCount(product.promotion!!, productToBuy.buyCount)
+        val countOfPromotion = promotionManager.getGiveawaysCount(product?.promotion!!, productToBuy.buyCount)
         val purchasedProduct = PurchasedProductOfPromotion(
             name = productToBuy.name,
             count = productToBuy.buyCount,
